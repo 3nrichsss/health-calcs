@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Age Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html">HealthCalcs</a></h1>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="calorie-deficit.html">Calorie Deficit Calculator</a></li>
+                    <li><a href="body-fat.html">Body Fat Calculator</a></li>
+                    <li><a href="blood-pressure.html">Blood Pressure Calculator</a></li>
+                    <li><a href="biological-age.html">Biological Age Calculator</a></li>
+                    <li><a href="bmi.html">BMI Calculator</a></li>
+                    <li><a href="bmr.html">BMR Calculator</a></li>
+                    <li><a href="heart-rate.html">Heart Rate Calculator</a></li>
+                    <li><a href="brain-age.html" class="active">Brain Age Calculator</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="content-inner">
+                <h2>Brain Age Calculator</h2>
+                <p>Estimate your "brain age" based on lifestyle factors that affect cognitive health. A lower brain age suggests better cognitive health relative to your chronological age.</p>
+
+                <form class="calc-form" id="calcForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Chronological Age</label>
+                            <input type="number" id="age" min="18" max="100" value="40" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Education Level</label>
+                            <select id="education">
+                                <option value="2">Postgraduate degree</option>
+                                <option value="1">University degree</option>
+                                <option value="0" selected>High school / Some college</option>
+                                <option value="-2">Less than high school</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Mental Stimulation (reading, puzzles, learning)</label>
+                        <select id="mental">
+                            <option value="2">Daily</option>
+                            <option value="0" selected>Several times a week</option>
+                            <option value="-1">Occasionally</option>
+                            <option value="-3">Rarely / Never</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Physical Exercise</label>
+                        <select id="exercise">
+                            <option value="2">5+ times per week</option>
+                            <option value="1">3–4 times per week</option>
+                            <option value="0" selected>1–2 times per week</option>
+                            <option value="-2">Rarely / Never</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sleep Quality</label>
+                        <select id="sleep">
+                            <option value="2">Excellent (7–8 hours, restful)</option>
+                            <option value="0" selected>Good (6–7 hours)</option>
+                            <option value="-2">Poor (less than 6 hours or restless)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Social Engagement</label>
+                        <select id="social">
+                            <option value="2">Very active (daily social interaction)</option>
+                            <option value="0" selected>Moderate (weekly social interaction)</option>
+                            <option value="-2">Low (rarely social)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Smoking Status</label>
+                        <select id="smoking">
+                            <option value="0" selected>Never smoked</option>
+                            <option value="-1">Former smoker</option>
+                            <option value="-4">Current smoker</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Alcohol Consumption</label>
+                        <select id="alcohol">
+                            <option value="0" selected>None / Occasional</option>
+                            <option value="-1">Moderate (1–2 drinks/day)</option>
+                            <option value="-2">Heavy (3+ drinks/day)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Stress Level</label>
+                        <select id="stress">
+                            <option value="1">Low</option>
+                            <option value="0" selected>Moderate</option>
+                            <option value="-2">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Diet Quality</label>
+                        <select id="diet">
+                            <option value="2">Excellent (Mediterranean-style, lots of fruits/veg/fish)</option>
+                            <option value="0" selected>Average</option>
+                            <option value="-2">Poor (high processed food, low fruits/veg)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+
+                <div class="result-box" id="result">
+                    <h3>Your Results</h3>
+                    <div id="resultContent"></div>
+                </div>
+
+                <div class="info-box">
+                    <h3>How It Works</h3>
+                    <p>This calculator estimates brain age by starting with your chronological age and adjusting it based on lifestyle factors known to affect cognitive health: education, mental stimulation, physical exercise, sleep, social engagement, smoking, alcohol, stress, and diet quality.</p>
+                    <p>Research shows that higher education, regular mental and physical activity, good sleep, strong social connections, a healthy diet, and avoiding smoking all contribute to a younger brain age.</p>
+                    <p><strong>References:</strong> Livingston G, et al. <em>Dementia prevention, intervention, and care: 2020 Lancet Commission</em>. Lancet. 2020;396(10248):413-446. Stern Y. <em>Cognitive reserve in ageing and Alzheimer's disease</em>. Lancet Neurol. 2012;11(11):1006-1012. Lourida I, et al. <em>Mediterranean diet, cognitive function, and dementia</em>. Am J Clin Nutr. 2019;110(3):648-656.</p>
+                </div>
+
+                <div class="disclaimer">
+                    <p><strong>Disclaimer:</strong> This calculator is for informational purposes only and is not a substitute for professional medical advice. Always consult with a healthcare provider regarding cognitive health concerns.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+    document.getElementById('calcForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var age = parseFloat(document.getElementById('age').value);
+        var education = parseFloat(document.getElementById('education').value);
+        var mental = parseFloat(document.getElementById('mental').value);
+        var exercise = parseFloat(document.getElementById('exercise').value);
+        var sleep = parseFloat(document.getElementById('sleep').value);
+        var social = parseFloat(document.getElementById('social').value);
+        var smoking = parseFloat(document.getElementById('smoking').value);
+        var alcohol = parseFloat(document.getElementById('alcohol').value);
+        var stress = parseFloat(document.getElementById('stress').value);
+        var diet = parseFloat(document.getElementById('diet').value);
+
+        var totalAdj = education + mental + exercise + sleep + social + smoking + alcohol + stress + diet;
+        var brainAge = Math.round((age + totalAdj) * 10) / 10;
+        brainAge = Math.max(brainAge, 18);
+
+        var diff = brainAge - age;
+        var diffText, diffColor;
+        if (diff < -1) {
+            diffText = Math.abs(diff).toFixed(1) + ' years younger than your chronological age. Excellent cognitive health!';
+            diffColor = '#27ae60';
+        } else if (diff > 1) {
+            diffText = diff.toFixed(1) + ' years older than your chronological age. Consider lifestyle improvements.';
+            diffColor = '#e74c3c';
+        } else {
+            diffText = 'About the same as your chronological age. Keep up healthy habits!';
+            diffColor = '#f39c12';
+        }
+
+        var html = '<div class="result-label">Your estimated brain age:</div>';
+        html += '<div class="big-number">' + brainAge + '</div>';
+        html += '<div class="result-label" style="color:' + diffColor + ';">' + diffText + '</div>';
+        html += '<table>';
+        html += '<tr><th>Factor</th><th>Adjustment</th></tr>';
+        html += '<tr><td>Education</td><td>' + (education > 0 ? '+' : '') + education + ' yrs</td></tr>';
+        html += '<tr><td>Mental Stimulation</td><td>' + (mental > 0 ? '+' : '') + mental + ' yrs</td></tr>';
+        html += '<tr><td>Physical Exercise</td><td>' + (exercise > 0 ? '+' : '') + exercise + ' yrs</td></tr>';
+        html += '<tr><td>Sleep</td><td>' + (sleep > 0 ? '+' : '') + sleep + ' yrs</td></tr>';
+        html += '<tr><td>Social Engagement</td><td>' + (social > 0 ? '+' : '') + social + ' yrs</td></tr>';
+        html += '<tr><td>Smoking</td><td>' + smoking + ' yrs</td></tr>';
+        html += '<tr><td>Alcohol</td><td>' + alcohol + ' yrs</td></tr>';
+        html += '<tr><td>Stress</td><td>' + (stress > 0 ? '+' : '') + stress + ' yrs</td></tr>';
+        html += '<tr><td>Diet</td><td>' + (diet > 0 ? '+' : '') + diet + ' yrs</td></tr>';
+        html += '<tr style="font-weight:700;"><td>Total Adjustment</td><td>' + (totalAdj > 0 ? '+' : '') + totalAdj + ' yrs</td></tr>';
+        html += '</table>';
+        document.getElementById('resultContent').innerHTML = html;
+        document.getElementById('result').classList.add('show');
+    });
+    </script>
+</body>
+</html>

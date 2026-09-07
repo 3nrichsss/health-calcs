@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html">HealthCalcs</a></h1>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="calorie-deficit.html">Calorie Deficit Calculator</a></li>
+                    <li><a href="body-fat.html">Body Fat Calculator</a></li>
+                    <li><a href="blood-pressure.html">Blood Pressure Calculator</a></li>
+                    <li><a href="biological-age.html">Biological Age Calculator</a></li>
+                    <li><a href="bmi.html" class="active">BMI Calculator</a></li>
+                    <li><a href="bmr.html">BMR Calculator</a></li>
+                    <li><a href="heart-rate.html">Heart Rate Calculator</a></li>
+                    <li><a href="brain-age.html">Brain Age Calculator</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="content-inner">
+                <h2>BMI Calculator</h2>
+                <p>Calculate your Body Mass Index (BMI) and find out which weight category you fall into.</p>
+
+                <form class="calc-form" id="calcForm">
+                    <div class="form-group">
+                        <label>Unit System</label>
+                        <select id="unit">
+                            <option value="metric">Metric (cm, kg)</option>
+                            <option value="imperial">Imperial (in, lbs)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label id="heightLabel">Height (cm)</label>
+                            <input type="number" id="height" min="50" max="300" value="175" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label id="weightLabel">Weight (kg)</label>
+                            <input type="number" id="weight" min="20" max="500" value="70" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="age" min="2" max="120" value="30" required>
+                    </div>
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+
+                <div class="result-box" id="result">
+                    <h3>Your Results</h3>
+                    <div id="resultContent"></div>
+                </div>
+
+                <div class="info-box">
+                    <h3>How It Works</h3>
+                    <p>BMI = weight (kg) / height² (m²). For imperial units, BMI = 703 × weight (lbs) / height² (in²).</p>
+                    <p>BMI is a screening tool but does not directly assess body fat. It may overestimate fat in muscular individuals and underestimate fat in older adults with reduced muscle mass.</p>
+                    <p><strong>References:</strong> WHO. <em>Obesity: preventing and managing the global epidemic</em>. WHO Technical Report Series 894. NIH. <em>Clinical Guidelines on the Identification, Evaluation, and Treatment of Overweight and Obesity in Adults</em>. 1998.</p>
+                </div>
+
+                <div class="disclaimer">
+                    <p><strong>Disclaimer:</strong> This calculator is for informational purposes only and is not a substitute for professional medical advice. Always consult with a healthcare provider.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+    document.getElementById('unit').addEventListener('change', function() {
+        if (this.value === 'metric') {
+            document.getElementById('heightLabel').textContent = 'Height (cm)';
+            document.getElementById('weightLabel').textContent = 'Weight (kg)';
+            document.getElementById('height').value = 175;
+            document.getElementById('weight').value = 70;
+        } else {
+            document.getElementById('heightLabel').textContent = 'Height (inches)';
+            document.getElementById('weightLabel').textContent = 'Weight (lbs)';
+            document.getElementById('height').value = 69;
+            document.getElementById('weight').value = 154;
+        }
+    });
+
+    document.getElementById('calcForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var unit = document.getElementById('unit').value;
+        var height = parseFloat(document.getElementById('height').value);
+        var weight = parseFloat(document.getElementById('weight').value);
+        var age = parseFloat(document.getElementById('age').value);
+
+        var bmi;
+        if (unit === 'metric') {
+            bmi = weight / Math.pow(height / 100, 2);
+        } else {
+            bmi = 703 * weight / Math.pow(height, 2);
+        }
+        bmi = Math.round(bmi * 10) / 10;
+
+        var category, color;
+        if (bmi < 18.5) { category = 'Underweight'; color = '#3498db'; }
+        else if (bmi < 25) { category = 'Normal weight'; color = '#27ae60'; }
+        else if (bmi < 30) { category = 'Overweight'; color = '#f39c12'; }
+        else if (bmi < 35) { category = 'Obese (Class I)'; color = '#e67e22'; }
+        else if (bmi < 40) { category = 'Obese (Class II)'; color = '#e74c3c'; }
+        else { category = 'Obese (Class III)'; color = '#c0392b'; }
+
+        // Healthy weight range
+        var hMeters = unit === 'metric' ? height / 100 : height * 0.0254;
+        var minWeight = 18.5 * hMeters * hMeters;
+        var maxWeight = 24.9 * hMeters * hMeters;
+        if (unit === 'imperial') {
+            minWeight = Math.round(minWeight * 2.20462);
+            maxWeight = Math.round(maxWeight * 2.20462);
+        } else {
+            minWeight = Math.round(minWeight * 10) / 10;
+            maxWeight = Math.round(maxWeight * 10) / 10;
+        }
+        var unitLabel = unit === 'metric' ? 'kg' : 'lbs';
+
+        var html = '<div class="result-label">Your BMI:</div>';
+        html += '<div class="big-number" style="color:' + color + ';">' + bmi + '</div>';
+        html += '<div class="result-label">Category: <strong>' + category + '</strong></div>';
+        html += '<table>';
+        html += '<tr><th>Category</th><th>BMI Range</th></tr>';
+        html += '<tr><td>Underweight</td><td>&lt; 18.5</td></tr>';
+        html += '<tr><td>Normal weight</td><td>18.5 – 24.9</td></tr>';
+        html += '<tr><td>Overweight</td><td>25.0 – 29.9</td></tr>';
+        html += '<tr><td>Obese (Class I)</td><td>30.0 – 34.9</td></tr>';
+        html += '<tr><td>Obese (Class II)</td><td>35.0 – 39.9</td></tr>';
+        html += '<tr><td>Obese (Class III)</td><td>≥ 40.0</td></tr>';
+        html += '</table>';
+        html += '<p style="margin-top:12px;font-size:14px;color:#555;">Healthy weight range for your height: <strong>' + minWeight + ' – ' + maxWeight + ' ' + unitLabel + '</strong></p>';
+        document.getElementById('resultContent').innerHTML = html;
+        document.getElementById('result').classList.add('show');
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Deficit Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html">HealthCalcs</a></h1>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="calorie-deficit.html" class="active">Calorie Deficit Calculator</a></li>
+                    <li><a href="body-fat.html">Body Fat Calculator</a></li>
+                    <li><a href="blood-pressure.html">Blood Pressure Calculator</a></li>
+                    <li><a href="biological-age.html">Biological Age Calculator</a></li>
+                    <li><a href="bmi.html">BMI Calculator</a></li>
+                    <li><a href="bmr.html">BMR Calculator</a></li>
+                    <li><a href="heart-rate.html">Heart Rate Calculator</a></li>
+                    <li><a href="brain-age.html">Brain Age Calculator</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="content-inner">
+                <h2>Calorie Deficit Calculator</h2>
+                <p>Calculate your daily calorie needs and project weight loss based on your desired calorie deficit.</p>
+
+                <form class="calc-form" id="calcForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number" id="age" min="1" max="120" value="30" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <select id="sex">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Height (cm)</label>
+                            <input type="number" id="height" min="50" max="300" value="175" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Weight (kg)</label>
+                            <input type="number" id="weight" min="20" max="500" value="80" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Activity Level</label>
+                        <select id="activity">
+                            <option value="1.2">Sedentary (little or no exercise)</option>
+                            <option value="1.375">Lightly active (1-3 days/week)</option>
+                            <option value="1.55" selected>Moderately active (3-5 days/week)</option>
+                            <option value="1.725">Very active (6-7 days/week)</option>
+                            <option value="1.9">Extra active (physical job + exercise)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Calorie Deficit (cal/day)</label>
+                        <input type="number" id="deficit" min="0" max="2000" value="500" step="50" required>
+                        <div class="hint">500 cal/day is a common target for ~0.5 kg/week loss</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Timeframe (days)</label>
+                        <input type="number" id="days" min="1" max="365" value="90" required>
+                    </div>
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+
+                <div class="result-box" id="result">
+                    <h3>Your Results</h3>
+                    <div id="resultContent"></div>
+                </div>
+
+                <div class="info-box">
+                    <h3>How It Works</h3>
+                    <p>This calculator uses the <strong>Mifflin-St Jeor equation</strong> to estimate your Basal Metabolic Rate (BMR), then applies an activity factor to determine your Total Daily Energy Expenditure (TDEE). Your calorie target is TDEE minus your chosen deficit.</p>
+                    <p>One kg of body fat ≈ 7,700 kcal. Projected weight loss = (deficit × days) ÷ 7,700.</p>
+                    <p><strong>References:</strong> Mifflin MD, et al. <em>Am J Clin Nutr</em>. 1990;51(2):241-247. Wishnofsky M. <em>Am J Clin Nutr</em>. 1958;6(5):555-558.</p>
+                </div>
+
+                <div class="disclaimer">
+                    <p><strong>Disclaimer:</strong> This calculator is for informational purposes only and is not a substitute for professional medical advice. Always consult with a healthcare provider before starting any weight loss program.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+    document.getElementById('calcForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var age = parseFloat(document.getElementById('age').value);
+        var sex = document.getElementById('sex').value;
+        var height = parseFloat(document.getElementById('height').value);
+        var weight = parseFloat(document.getElementById('weight').value);
+        var activity = parseFloat(document.getElementById('activity').value);
+        var deficit = parseFloat(document.getElementById('deficit').value);
+        var days = parseFloat(document.getElementById('days').value);
+
+        var bmr;
+        if (sex === 'male') {
+            bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+        } else {
+            bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+        }
+        var tdee = bmr * activity;
+        var calorieTarget = tdee - deficit;
+        var totalDeficit = deficit * days;
+        var weightLoss = totalDeficit / 7700;
+
+        var html = '<div class="result-label">Your TDEE (maintenance calories):</div>';
+        html += '<div class="big-number">' + Math.round(tdee) + ' cal/day</div>';
+        html += '<table>';
+        html += '<tr><th>Metric</th><th>Value</th></tr>';
+        html += '<tr><td>BMR (Basal Metabolic Rate)</td><td>' + Math.round(bmr) + ' cal/day</td></tr>';
+        html += '<tr><td>TDEE (Total Daily Energy Expenditure)</td><td>' + Math.round(tdee) + ' cal/day</td></tr>';
+        html += '<tr><td>Daily Calorie Target (with deficit)</td><td>' + Math.round(calorieTarget) + ' cal/day</td></tr>';
+        html += '<tr><td>Projected Weight Loss in ' + days + ' days</td><td>' + weightLoss.toFixed(1) + ' kg</td></tr>';
+        html += '<tr><td>Daily Deficit</td><td>' + deficit + ' cal/day</td></tr>';
+        html += '</table>';
+        if (calorieTarget < 1200 && sex === 'female') {
+            html += '<p style="margin-top:12px;color:#c0392b;font-size:13px;"><strong>Warning:</strong> Your calorie target is below 1,200 cal/day, which is generally not recommended for women without medical supervision.</p>';
+        }
+        if (calorieTarget < 1500 && sex === 'male') {
+            html += '<p style="margin-top:12px;color:#c0392b;font-size:13px;"><strong>Warning:</strong> Your calorie target is below 1,500 cal/day, which is generally not recommended for men without medical supervision.</p>';
+        }
+        document.getElementById('resultContent').innerHTML = html;
+        document.getElementById('result').classList.add('show');
+    });
+    </script>
+</body>
+</html>

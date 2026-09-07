@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Rate Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html">HealthCalcs</a></h1>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="calorie-deficit.html">Calorie Deficit Calculator</a></li>
+                    <li><a href="body-fat.html">Body Fat Calculator</a></li>
+                    <li><a href="blood-pressure.html">Blood Pressure Calculator</a></li>
+                    <li><a href="biological-age.html">Biological Age Calculator</a></li>
+                    <li><a href="bmi.html">BMI Calculator</a></li>
+                    <li><a href="bmr.html">BMR Calculator</a></li>
+                    <li><a href="heart-rate.html" class="active">Heart Rate Calculator</a></li>
+                    <li><a href="brain-age.html">Brain Age Calculator</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="content-inner">
+                <h2>Heart Rate Calculator</h2>
+                <p>Calculate your maximum heart rate and target heart rate zones for exercise based on your age.</p>
+
+                <form class="calc-form" id="calcForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number" id="age" min="1" max="120" value="30" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Resting Heart Rate (bpm)</label>
+                            <input type="number" id="rhr" min="30" max="150" value="65" required>
+                            <div class="hint">Used for Karvonen formula</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+
+                <div class="result-box" id="result">
+                    <h3>Your Results</h3>
+                    <div id="resultContent"></div>
+                </div>
+
+                <div class="info-box">
+                    <h3>How It Works</h3>
+                    <p><strong>Maximum Heart Rate (MHR):</strong> Estimated using the Tanaka formula: 208 − 0.7 × age. This is more accurate than the older "220 − age" formula.</p>
+                    <p><strong>Target Zones (percentage of MHR):</p>
+                    <ul>
+                        <li><strong>Zone 1 (Very Light):</strong> 50–60% — warm-up, recovery</li>
+                        <li><strong>Zone 2 (Light):</strong> 60–70% — fat burning, endurance base</li>
+                        <li><strong>Zone 3 (Moderate):</strong> 70–80% — aerobic fitness</li>
+                        <li><strong>Zone 4 (Hard):</strong> 80–90% — anaerobic threshold, VO₂ max</li>
+                        <li><strong>Zone 5 (Maximum):</strong> 90–100% — peak performance, intervals</li>
+                    </ul>
+                    <p><strong>Karvonen Formula:</strong> Target HR = ((MHR − RHR) × % intensity) + RHR. This accounts for your resting heart rate for more personalized zones.</p>
+                    <p><strong>References:</strong> Tanaka H, et al. <em>Age-predicted maximal heart rate revisited</em>. J Am Coll Cardiol. 2001;38(1):153-156. Karvonen MJ, et al. <em>The effects of training on heart rate</em>. Ann Med Exp Biol Fenn. 1957;35:307-315.</p>
+                </div>
+
+                <div class="disclaimer">
+                    <p><strong>Disclaimer:</strong> This calculator is for informational purposes only and is not a substitute for professional medical advice. Always consult with a healthcare provider before starting an exercise program.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+    document.getElementById('calcForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var age = parseFloat(document.getElementById('age').value);
+        var rhr = parseFloat(document.getElementById('rhr').value);
+
+        var mhr = 208 - 0.7 * age;
+        var mhrOld = 220 - age;
+        var hrr = mhr - rhr;
+
+        var zones = [
+            { name: 'Zone 1 — Very Light (50–60%)', min: 0.50, max: 0.60 },
+            { name: 'Zone 2 — Light (60–70%)', min: 0.60, max: 0.70 },
+            { name: 'Zone 3 — Moderate (70–80%)', min: 0.70, max: 0.80 },
+            { name: 'Zone 4 — Hard (80–90%)', min: 0.80, max: 0.90 },
+            { name: 'Zone 5 — Maximum (90–100%)', min: 0.90, max: 1.00 }
+        ];
+
+        var html = '<div class="result-label">Your Maximum Heart Rate (MHR):</div>';
+        html += '<div class="big-number">' + Math.round(mhr) + ' bpm</div>';
+        html += '<table>';
+        html += '<tr><th>Zone</th><th>% of MHR</th><th>BPM Range</th><th>Karvonen BPM</th></tr>';
+        zones.forEach(function(z) {
+            var minBpm = Math.round(mhr * z.min);
+            var maxBpm = Math.round(mhr * z.max);
+            var minKarv = Math.round(hrr * z.min + rhr);
+            var maxKarv = Math.round(hrr * z.max + rhr);
+            html += '<tr><td>' + z.name + '</td><td>' + Math.round(z.min*100) + '–' + Math.round(z.max*100) + '%</td><td>' + minBpm + '–' + maxBpm + '</td><td>' + minKarv + '–' + maxKarv + '</td></tr>';
+        });
+        html += '</table>';
+        html += '<p style="margin-top:12px;font-size:14px;color:#555;">Old formula (220 − age) gives: <strong>' + Math.round(mhrOld) + ' bpm</strong>. The Tanaka formula (used above) is more accurate.</p>';
+        document.getElementById('resultContent').innerHTML = html;
+        document.getElementById('result').classList.add('show');
+    });
+    </script>
+</body>
+</html>

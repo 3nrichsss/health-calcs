@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Fat Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html">HealthCalcs</a></h1>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="calorie-deficit.html">Calorie Deficit Calculator</a></li>
+                    <li><a href="body-fat.html" class="active">Body Fat Calculator</a></li>
+                    <li><a href="blood-pressure.html">Blood Pressure Calculator</a></li>
+                    <li><a href="biological-age.html">Biological Age Calculator</a></li>
+                    <li><a href="bmi.html">BMI Calculator</a></li>
+                    <li><a href="bmr.html">BMR Calculator</a></li>
+                    <li><a href="heart-rate.html">Heart Rate Calculator</a></li>
+                    <li><a href="brain-age.html">Brain Age Calculator</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="content-inner">
+                <h2>Body Fat Calculator</h2>
+                <p>Estimate your body fat percentage using the U.S. Navy method, which uses circumference measurements.</p>
+
+                <form class="calc-form" id="calcForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <select id="sex">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Height (cm)</label>
+                            <input type="number" id="height" min="100" max="250" value="175" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Neck Circumference (cm)</label>
+                        <input type="number" id="neck" min="20" max="80" value="38" step="0.1" required>
+                        <div class="hint">Measure just below the larynx (Adam's apple)</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Waist Circumference (cm)</label>
+                        <input type="number" id="waist" min="40" max="200" value="85" step="0.1" required>
+                        <div class="hint">Measure at the navel (belly button) level</div>
+                    </div>
+                    <div class="form-group" id="hipGroup" style="display:none;">
+                        <label>Hip Circumference (cm)</label>
+                        <input type="number" id="hip" min="50" max="200" value="95" step="0.1" required>
+                        <div class="hint">Measure at the widest point of the hips/buttocks</div>
+                    </div>
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+
+                <div class="result-box" id="result">
+                    <h3>Your Results</h3>
+                    <div id="resultContent"></div>
+                </div>
+
+                <div class="info-box">
+                    <h3>How It Works</h3>
+                    <p>This calculator uses the <strong>U.S. Navy body fat formula</strong>, which estimates body fat percentage from circumference measurements of the neck, waist, and (for women) hips, along with height.</p>
+                    <p><strong>Formula (men):</strong> 495 / (1.0324 − 0.19077 × log₁₀(waist − neck) + 0.15456 × log₁₀(height)) − 450</p>
+                    <p><strong>Formula (women):</strong> 495 / (1.29579 − 0.35004 × log₁₀(waist + hip − neck) + 0.22100 × log₁₀(height)) − 450</p>
+                    <p><strong>References:</strong> U.S. Navy. <em>NAVPERS 15909C: Physical Readiness Program</em>. Hodgdon JA, Beckett MB. <em>Prediction of percent body fat for U.S. Navy men and women</em>. NOSC Technical Report TR 84-29, 1984.</p>
+                </div>
+
+                <div class="disclaimer">
+                    <p><strong>Disclaimer:</strong> This calculator is for informational purposes only and is not a substitute for professional medical advice. Always consult with a healthcare provider before making health decisions.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+    document.getElementById('sex').addEventListener('change', function() {
+        document.getElementById('hipGroup').style.display = this.value === 'female' ? 'block' : 'none';
+    });
+
+    document.getElementById('calcForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var sex = document.getElementById('sex').value;
+        var height = parseFloat(document.getElementById('height').value);
+        var neck = parseFloat(document.getElementById('neck').value);
+        var waist = parseFloat(document.getElementById('waist').value);
+        var hip = parseFloat(document.getElementById('hip').value);
+
+        var bf;
+        if (sex === 'male') {
+            if (waist <= neck) { alert('Waist must be greater than neck circumference.'); return; }
+            bf = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+        } else {
+            if (waist + hip <= neck) { alert('Waist + hip must be greater than neck circumference.'); return; }
+            bf = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450;
+        }
+
+        bf = Math.max(bf, 0);
+        var category = '';
+        if (sex === 'male') {
+            if (bf < 6) category = 'Essential fat';
+            else if (bf < 14) category = 'Athletic';
+            else if (bf < 18) category = 'Fitness';
+            else if (bf < 25) category = 'Acceptable';
+            else category = 'Obese';
+        } else {
+            if (bf < 14) category = 'Essential fat';
+            else if (bf < 21) category = 'Athletic';
+            else if (bf < 25) category = 'Fitness';
+            else if (bf < 32) category = 'Acceptable';
+            else category = 'Obese';
+        }
+
+        var html = '<div class="result-label">Your estimated body fat:</div>';
+        html += '<div class="big-number">' + bf.toFixed(1) + '%</div>';
+        html += '<div class="result-label">Category: <strong>' + category + '</strong></div>';
+        html += '<table>';
+        html += '<tr><th>Category</th><th>Men</th><th>Women</th></tr>';
+        html += '<tr><td>Essential fat</td><td>2–5%</td><td>10–13%</td></tr>';
+        html += '<tr><td>Athletic</td><td>6–13%</td><td>14–20%</td></tr>';
+        html += '<tr><td>Fitness</td><td>14–17%</td><td>21–24%</td></tr>';
+        html += '<tr><td>Acceptable</td><td>18–24%</td><td>25–31%</td></tr>';
+        html += '<tr><td>Obese</td><td>25%+</td><td>32%+</td></tr>';
+        html += '</table>';
+        document.getElementById('resultContent').innerHTML = html;
+        document.getElementById('result').classList.add('show');
+    });
+    </script>
+</body>
+</html>
